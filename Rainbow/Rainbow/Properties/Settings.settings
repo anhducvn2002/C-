@@ -1,0 +1,15 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Rainbow.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="FUJIServer" Type="System.String" Scope="User">
+      <Value Profile="(Default)">10.121.21.11</Value>
+    </Setting>
+    <Setting Name="OTAServer" Type="System.String" Scope="User">
+      <Value Profile="(Default)">10.121.21.12</Value>
+    </Setting>
+    <Setting Name="DBFFolder" Type="System.String" Scope="User">
+      <Value Profile="(Default)">\\10.121.21.16\Rainbow</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
