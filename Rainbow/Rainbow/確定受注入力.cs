@@ -42,7 +42,7 @@ namespace Rainbow
             string FUJIConString = "Data Source=" + Properties.Settings.Default.FUJIServer + ";Initial Catalog=TESC;Persist Security Info=True;User ID=TESCWIN;";
 
 
-            //TOK
+            ///TOK 得意先の情報を取得する
             DataTable dtTOK = new DataTable();
             using (SqlConnection con = new SqlConnection(FUJIConString))
             {
@@ -61,7 +61,7 @@ namespace Rainbow
             cbxTOKCD.DisplayMember = "TOKCD";
             cbxTOKCD.ValueMember = "TOKCD";
 
-            //BUHIN ZUBAN
+            ///小田原サーバーで　部品図番を取得する  
             using (SqlConnection con = new SqlConnection(OTAConString))
             {
                 SqlCommand cmd = new SqlCommand("SELECT RTRIM(M0100B.ZUBAN) ZUBAN,M0100B.ZAICD " +
@@ -80,7 +80,7 @@ namespace Rainbow
                 con.Close();
             }
 
-            //SEIHIN
+            ///富士宮サーバーで製品図番を取得する
             using (SqlConnection con = new SqlConnection(FUJIConString))
             {
                 SqlCommand cmd = new SqlCommand("SELECT RTRIM(ZUBAN) ZUBAN FROM M0100 WHERE ZAIKB = 'A'", con);
@@ -97,122 +97,11 @@ namespace Rainbow
             }
         }
 
-        private int getMaxNO()
-        {
-            int result = 0;
-            OleDbConnection conn = new OleDbConnection(@"Provider = Microsoft.Jet.OLEDB.4.0; Data Source = " + Properties.Settings.Default.DBFFolder + "; Extended Properties = dBASE IV;");
-            try
-            {
-                conn.Open();
-                string query = "SELECT MAX(CYUNO) FROM CYUMNDF.DBF WHERE CYUNO LIKE '1234%' ";// WHERE SFLG=''";
-                OleDbCommand cmd = new OleDbCommand(query, conn);
-
-                DataTable dt = new DataTable();
-                dt.Load(cmd.ExecuteReader());
-                conn.Close();
-
-                result = Int32.Parse(dt.Rows[0][0].ToString()) + 1;
-                return result;
-            }
-            catch { }
-            return 0;
-        }
-
-        private void btnCancel_Click(object sender, EventArgs e)
-        {
-            txtCYUNO.Text = "";
-            txtKISYU.Text = "";
-            txtSNAME.Text = "";
-            txtTANKA.Text = "";
-            txtSEIHIN.Text = "";
-            txtBUHIN.Text = "";
-            dtCYUDT.Value = DateTime.Today;
-            dtNOUKI.Value = DateTime.Today.AddDays(7);
-            dtNOUNYU.Value = DateTime.Today.AddDays(8);
-        }
-
-        private void btnOK_Click(object sender, EventArgs e)
-        {
-            string CYUNO = txtCYUNO.Text;
-            string SOUHU = "0";
-            string CYUDT = dtCYUDT.Value.ToString("yyyyMMdd");
-            string BCODE = "";
-            string ZUBAN = txtSEIHIN.Text;
-            string SNAME = txtSNAME.Text;
-            string KISYU = "";
-            string TANI = "";
-            string TANKA = txtTANKA.Text;
-            string CYUSU = numCYUSU.Value.ToString();
-            string NOUKI = dtNOUKI.Value.ToString("yyyyMMdd");
-            string HKBN = "";
-            string SEIZO = "";
-            string HINSYU = "";
-            string NKBN = "";
-            string TOKCD = cbxTOKCD.Text;
-            string NOUCD = cbxNOU.Text.Substring(2, 3);
-            string SFLG = " ";
-
-            if (ZUBAN == "")
-            {
-                MessageBox.Show("*図番を入力してください。");
-                return;
-            }
-            if (lblzuban.Text != "")
-            {
-                MessageBox.Show("*図番をマスターに登録されていません。");
-                return;
-            }
-
-            if (CYUNO == "" || CYUNO == null)
-            {
-                DialogResult result = MessageBox.Show("受注番号は入力されていませんが、よろしいですか？",
-                "確認",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Exclamation,
-                MessageBoxDefaultButton.Button1);
-
-                if (result == DialogResult.No)
-                {
-                    return;
-                }
-            }
-
-            //INSERT CYUMN
-            string sqlINS = "INSERT INTO CYUMNDF.DBF VALUES ('" + CYUNO + "','" + SOUHU + "','" + CYUDT + "','" + BCODE + "','" + ZUBAN + "','" + SNAME + "','" + KISYU + "','" + TANI + "','" + TANKA + "','" + CYUSU + "','" + NOUKI + "','" + HKBN + "','" + SEIZO + "','" + HINSYU + "','" + NKBN + "','" + TOKCD + "','" + NOUCD + "','" + SFLG + "')";
-            OleDbConnection conn = new OleDbConnection(@"Provider = Microsoft.Jet.OLEDB.4.0; Data Source = " + Properties.Settings.Default.DBFFolder + "; Extended Properties = dBASE IV;");
-            conn.Open();
-            OleDbCommand cmd = new OleDbCommand(sqlINS, conn);
-            cmd.ExecuteNonQuery();
-            conn.Close();
-
-            if (lblNOUNYU.Visible && dtNOUNYU.Visible)
-            {
-                string NOUNYU = dtNOUNYU.Value.ToString("yyyyMMdd");
-                //INSERT SEIYO
-                string sqlINS2 = "INSERT INTO SEIYODF.DBF VALUES ('','" + SOUHU + "','" + CYUDT + "','" + BCODE + "','" + ZUBAN + "','" + SNAME + "','" + KISYU + "','" + TANI + "','" + TANKA + "','" + CYUSU + "','" + NOUNYU + "','" + HKBN + "','" + SEIZO + "','" + HINSYU + "','" + NKBN + "','" + TOKCD + "','" + NOUCD + "','" + SFLG + "')";
-                conn.Open();
-                OleDbCommand cmd2 = new OleDbCommand(sqlINS2, conn);
-                cmd2.ExecuteNonQuery();
-                conn.Close();
-            }
-
-            if (txtCYUNO.Text == "" || txtCYUNO.Text == null)
-            {
-                MessageBox.Show("製品図番 [" + txtSEIHIN.Text + "] を登録しました。");
-            }
-            else
-            {
-                MessageBox.Show("受注番号 [" + txtCYUNO.Text + "] を登録しました。");
-            }
-            txtCYUNO.Text = "";
-            btnOK.Enabled = false;
-        }
-
-        private void txtCYUSU_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar);
-        }
-
+        /// <summary>
+        /// 得意先コードを選択時
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void cbxTOKCD_SelectedIndexChanged(object sender, EventArgs e)
         {
             txtSEIHIN.Text = "";
@@ -230,11 +119,10 @@ namespace Rainbow
                 lblNOUNYU.Visible = true;
                 dtNOUNYU.Visible = true;
             }
-
             txtBUHIN.Text = "";
 
+            ///納入場所を確認する
             DataTable dtResult = new DataTable();
-
             string ConString = "Data Source=" + Properties.Settings.Default.FUJIServer + ";Initial Catalog=TESC;Persist Security Info=True;User ID=TESCWIN;";
             using (SqlConnection con = new SqlConnection(ConString))
             {
@@ -270,25 +158,26 @@ namespace Rainbow
             checkOK();
         }
 
-        private void cbxTOKCD_TextChanged(object sender, EventArgs e)
-        {
-            if (cbxTOKCD.SelectedIndex < 0)
-            {
-                cbxTOKCD.SelectedIndex = cbxTOK.SelectedIndex;
-            }
-            if (cbxTOK.SelectedIndex < 0)
-            {
-                cbxTOK.SelectedIndex = cbxTOKCD.SelectedIndex;
-            }
-            checkOK();
-        }
-
+        /// <summary>
+        /// 部品図番をに入力する
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void txtBUHIN_TextChanged(object sender, EventArgs e)
         {
             if (getFlag) return;
             if (SEIFlag) return;
-            if (txtBUHIN.Text == "")
+
+            //if (txtBUHIN.Text.Length < 3) return;
+            if (cbxTOKCD.Text != "001") return;
+
+            BUFlag = true;
+            if (txtBUHIN.Text == "" || txtBUHIN.Text == null || txtBUHIN.Text.Length < 3)
             {
+                txtSNAME.Text = "";
+                txtTANKA.Text = "";
+                txtKISYU.Text = "";
+                lblzuban.Text = "";
                 if (Application.OpenForms.Cast<Form>().Any(form => form.Name == "図番マスター"))
                 {
                     if (Application.OpenForms["図番マスター"].Visible)
@@ -296,24 +185,12 @@ namespace Rainbow
                         Application.OpenForms["図番マスター"].Hide();
                     }
                 }
-                return;
-            }
-            if (txtBUHIN.Text.Length < 3) return;
-            if (cbxTOKCD.Text != "001") return;
-
-            BUFlag = true;
-            if (txtBUHIN.Text == "" || txtBUHIN.Text == null)
-            {
-                txtSNAME.Text = "";
-                txtTANKA.Text = "";
-                txtKISYU.Text = "";
-                lblzuban.Text = "";
                 BUFlag = false;
                 return;
             }
 
+            ///製品図番の確認
             DataTable dtResult = new DataTable();
-
             string ConString = "Data Source=" + Properties.Settings.Default.FUJIServer + ";Initial Catalog=TESC;Persist Security Info=True;User ID=TESCWIN;";
             using (SqlConnection con = new SqlConnection(ConString))
             {
@@ -350,64 +227,19 @@ namespace Rainbow
             checkOK();
         }
 
-        private void txtSEIHIN_TextChanged(object sender, EventArgs e)
-        {
-            if (txtSEIHIN.Text == currentSeihin) return;
-            if (getFlag) return;
-            if (txtSEIHIN.Text == "")
-            {
-                txtSNAME.Text = "";
-                txtTANKA.Text = "";
-                txtKISYU.Text = "";
-                return;
-            }
-            if (BUFlag) return;
-            SEIFlag = true;
-
-            txtBUHIN.Text = "";
-            DataTable dtResult = new DataTable();
-
-            string ConString = "Data Source=" + Properties.Settings.Default.FUJIServer + ";Initial Catalog=TESC;Persist Security Info=True;User ID=TESCWIN;";
-            using (SqlConnection con = new SqlConnection(ConString))
-            {
-                SqlCommand cmd = new SqlCommand("SELECT RTRIM(P.ZUBAN) ZUBAN,P.NAME,P.KISYU,P.TANKA,C.ZUBAN " +
-                    "FROM M0100 P " +
-                    "LEFT JOIN M0120 T ON P.ZAICD = T.ZAICD " +
-                    "LEFT JOIN M0100 C ON T.KABUH = C.ZAICD " +
-                    "WHERE P.ZUBAN='" + txtSEIHIN.Text + "'", con);
-                con.Open();
-
-                SqlDataAdapter ada = new SqlDataAdapter(cmd);
-                ada.Fill(dtResult);
-                con.Close();
-            }
-
-            if (dtResult.Rows.Count == 0)
-            {
-                txtSNAME.Text = "";
-                txtTANKA.Text = "";
-                txtKISYU.Text = "";
-                lblzuban.Text = "*図番をマスターに登録されていません。";
-            }
-            else
-            {
-                lblzuban.Text = "";
-                txtSNAME.Text = dtResult.Rows[0][1].ToString();
-                txtKISYU.Text = dtResult.Rows[0][2].ToString();
-                txtTANKA.Text = dtResult.Rows[0][3].ToString();
-            }
-
-            currentSeihin = txtSEIHIN.Text;
-            SEIFlag = false;
-
-            checkOK();
-        }
-
+        /// <summary>
+        /// 図番をマスターに登録されていない場合
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void txtBUHIN_Leave(object sender, EventArgs e)
         {
             if (getFlag) return;
             if (txtBUHIN.Text == "") return;
             if (txtBUHIN.Text.Length < 3) return;
+
+            ///富士宮サーバーに製品図番を登録されていない場合
+            ///小田原サーバーで製品情報を取得する
             if (txtSEIHIN.Text == "" || txtSEIHIN.Text == null)
             {
                 getFlag = true;
@@ -456,13 +288,14 @@ namespace Rainbow
             checkOK();
         }
 
-        private void checkOK()
-        {
-            if (lblzuban.Text + lblNOU.Text == "") btnOK.Enabled = true;
-            else btnOK.Enabled = false;
-        }
-
-
+        /// <summary>
+        /// 図番マスターFormからデーターを取得する
+        /// </summary>
+        /// <param name="seihin"></param>
+        /// <param name="name"></param>
+        /// <param name="kisyu"></param>
+        /// <param name="tanka"></param>
+        /// <param name="buhin"></param>
         public void getValue(string seihin, string name, string kisyu, string tanka, string buhin)
         {
             getFlag = true;
@@ -474,7 +307,177 @@ namespace Rainbow
             txtBUHIN.Text = buhin;
             getFlag = false;
         }
+        
+        /// <summary>
+        /// 製品の情報を取得する
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void txtSEIHIN_TextChanged(object sender, EventArgs e)
+        {
+            if (txtSEIHIN.Text == currentSeihin) return;
+            if (getFlag) return;
+            if (txtSEIHIN.Text == "")
+            {
+                txtSNAME.Text = "";
+                txtTANKA.Text = "";
+                txtKISYU.Text = "";
+                return;
+            }
+            if (BUFlag) return;
+            SEIFlag = true;
 
+            txtBUHIN.Text = "";
+
+            ///製品情報を取得する
+            DataTable dtResult = new DataTable();
+            string ConString = "Data Source=" + Properties.Settings.Default.FUJIServer + ";Initial Catalog=TESC;Persist Security Info=True;User ID=TESCWIN;";
+            using (SqlConnection con = new SqlConnection(ConString))
+            {
+                SqlCommand cmd = new SqlCommand("SELECT RTRIM(P.ZUBAN) ZUBAN,P.NAME,P.KISYU,P.TANKA,C.ZUBAN " +
+                    "FROM M0100 P " +
+                    "LEFT JOIN M0120 T ON P.ZAICD = T.ZAICD " +
+                    "LEFT JOIN M0100 C ON T.KABUH = C.ZAICD " +
+                    "WHERE P.ZUBAN='" + txtSEIHIN.Text + "'", con);
+                con.Open();
+
+                SqlDataAdapter ada = new SqlDataAdapter(cmd);
+                ada.Fill(dtResult);
+                con.Close();
+            }
+
+            if (dtResult.Rows.Count == 0)
+            {
+                txtSNAME.Text = "";
+                txtTANKA.Text = "";
+                txtKISYU.Text = "";
+                lblzuban.Text = "*図番をマスターに登録されていません。";
+            }
+            else
+            {
+                lblzuban.Text = "";
+                txtSNAME.Text = dtResult.Rows[0][1].ToString();
+                txtKISYU.Text = dtResult.Rows[0][2].ToString();
+                txtTANKA.Text = dtResult.Rows[0][3].ToString();
+            }
+
+            currentSeihin = txtSEIHIN.Text;
+            SEIFlag = false;
+
+            checkOK();
+        }
+                       
+        /// <summary>
+        /// 登録場合
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnOK_Click(object sender, EventArgs e)
+        {
+            string CYUNO = txtCYUNO.Text;
+            string SOUHU = "0";
+            string CYUDT = dtCYUDT.Value.ToString("yyyyMMdd");
+            string BCODE = "";
+            string ZUBAN = txtSEIHIN.Text;
+            string SNAME = txtSNAME.Text;
+            string KISYU = "";
+            string TANI = "";
+            string TANKA = txtTANKA.Text;
+            string CYUSU = numCYUSU.Value.ToString();
+            string NOUKI = dtNOUKI.Value.ToString("yyyyMMdd");
+            string HKBN = "";
+            string SEIZO = "";
+            string HINSYU = "";
+            string NKBN = "";
+            string TOKCD = cbxTOKCD.Text;
+            string NOUCD = cbxNOU.Text.Substring(2, 3);
+            string SFLG = " ";
+
+            if (ZUBAN == "")
+            {
+                MessageBox.Show("*図番を入力してください。");
+                return;
+            }
+            if (lblzuban.Text != "")
+            {
+                MessageBox.Show("*図番をマスターに登録されていません。");
+                return;
+            }
+
+            if (CYUNO == "" || CYUNO == null)
+            {
+                DialogResult result = MessageBox.Show("受注番号は入力されていませんが、よろしいですか？",
+                "確認",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Exclamation,
+                MessageBoxDefaultButton.Button1);
+
+                if (result == DialogResult.No)
+                {
+                    return;
+                }
+            }
+
+            ///確定受注を登録
+            string sqlINS = "INSERT INTO CYUMNDF.DBF VALUES ('" + CYUNO + "','" + SOUHU + "','" + CYUDT + "','" + BCODE + "','" + ZUBAN + "','" + SNAME + "','" + KISYU + "','" + TANI + "','" + TANKA + "','" + CYUSU + "','" + NOUKI + "','" + HKBN + "','" + SEIZO + "','" + HINSYU + "','" + NKBN + "','" + TOKCD + "','" + NOUCD + "','" + SFLG + "')";
+            OleDbConnection conn = new OleDbConnection(@"Provider = Microsoft.Jet.OLEDB.4.0; Data Source = " + Properties.Settings.Default.DBFFolder + "; Extended Properties = dBASE IV;");
+            conn.Open();
+            OleDbCommand cmd = new OleDbCommand(sqlINS, conn);
+            cmd.ExecuteNonQuery();
+            conn.Close();
+
+            ///生産予定も登録の場合　ー　得意先コードの①
+            if (lblNOUNYU.Visible && dtNOUNYU.Visible)
+            {
+                string NOUNYU = dtNOUNYU.Value.ToString("yyyyMMdd");
+                //INSERT SEIYO
+                string sqlINS2 = "INSERT INTO SEIYODF.DBF VALUES ('','" + SOUHU + "','" + CYUDT + "','" + BCODE + "','" + ZUBAN + "','" + SNAME + "','" + KISYU + "','" + TANI + "','" + TANKA + "','" + CYUSU + "','" + NOUNYU + "','" + HKBN + "','" + SEIZO + "','" + HINSYU + "','" + NKBN + "','" + TOKCD + "','" + NOUCD + "','" + SFLG + "')";
+                conn.Open();
+                OleDbCommand cmd2 = new OleDbCommand(sqlINS2, conn);
+                cmd2.ExecuteNonQuery();
+                conn.Close();
+            }
+
+            ///受注番号を入力されていない
+            if (txtCYUNO.Text == "" || txtCYUNO.Text == null)
+            {
+                MessageBox.Show("製品図番 [" + txtSEIHIN.Text + "] を登録しました。");
+            }
+            else
+            {
+                MessageBox.Show("受注番号 [" + txtCYUNO.Text + "] を登録しました。");
+            }
+            txtCYUNO.Text = "";
+            btnOK.Enabled = false;
+        }
+
+        /// <summary>
+        /// 中止場合
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            txtCYUNO.Text = "";
+            txtKISYU.Text = "";
+            txtSNAME.Text = "";
+            txtTANKA.Text = "";
+            txtSEIHIN.Text = "";
+            txtBUHIN.Text = "";
+            dtCYUDT.Value = DateTime.Today;
+            dtNOUKI.Value = DateTime.Today.AddDays(7);
+            dtNOUNYU.Value = DateTime.Today.AddDays(8);
+        }
+
+        /// <summary>
+        /// 要件確認
+        /// </summary>
+        private void checkOK()
+        {
+            if (lblzuban.Text + lblNOU.Text == "") btnOK.Enabled = true;
+            else btnOK.Enabled = false;
+        }
+        
         /// <summary>
         /// 
         /// </summary>

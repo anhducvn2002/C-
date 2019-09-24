@@ -264,7 +264,6 @@
             this.cbxTOK.Name = "cbxTOK";
             this.cbxTOK.Size = new System.Drawing.Size(151, 20);
             this.cbxTOK.TabIndex = 1;
-            this.cbxTOK.Validated += new System.EventHandler(this.cbxTOKCD_TextChanged);
             // 
             // numCYUSU
             // 
@@ -300,7 +299,6 @@
             this.cbxTOKCD.Size = new System.Drawing.Size(49, 20);
             this.cbxTOKCD.TabIndex = 0;
             this.cbxTOKCD.SelectedIndexChanged += new System.EventHandler(this.cbxTOKCD_SelectedIndexChanged);
-            this.cbxTOKCD.Validated += new System.EventHandler(this.cbxTOKCD_TextChanged);
             // 
             // txtSEIHIN
             // 
