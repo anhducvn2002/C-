@@ -222,11 +222,10 @@
             this.cbxTOK.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
             this.cbxTOK.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
             this.cbxTOK.FormattingEnabled = true;
-            this.cbxTOK.Location = new System.Drawing.Point(158, 77);
+            this.cbxTOK.Location = new System.Drawing.Point(171, 77);
             this.cbxTOK.Name = "cbxTOK";
-            this.cbxTOK.Size = new System.Drawing.Size(161, 20);
+            this.cbxTOK.Size = new System.Drawing.Size(148, 20);
             this.cbxTOK.TabIndex = 1;
-            this.cbxTOK.Validated += new System.EventHandler(this.cbxTOKCD_TextChanged);
             // 
             // numCYUSU
             // 
@@ -259,10 +258,9 @@
             this.cbxTOKCD.FormattingEnabled = true;
             this.cbxTOKCD.Location = new System.Drawing.Point(113, 77);
             this.cbxTOKCD.Name = "cbxTOKCD";
-            this.cbxTOKCD.Size = new System.Drawing.Size(39, 20);
+            this.cbxTOKCD.Size = new System.Drawing.Size(52, 20);
             this.cbxTOKCD.TabIndex = 0;
             this.cbxTOKCD.SelectedIndexChanged += new System.EventHandler(this.cbxTOKCD_SelectedIndexChanged);
-            this.cbxTOKCD.Validated += new System.EventHandler(this.cbxTOKCD_TextChanged);
             // 
             // txtSEIHIN
             // 

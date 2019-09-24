@@ -26,22 +26,21 @@ namespace Rainbow
         public 生産予定入力()
         {
             InitializeComponent();
-
             dtCYUDT.Value = DateTime.Today;
             dtNOUNYU.Value = DateTime.Today.AddDays(8);
         }
+
         private void 生産予定入力_Load(object sender, EventArgs e)
         {
             txtKISYU.TabStop = false;
             txtSNAME.TabStop = false;
             txtTANKA.TabStop = false;
-
             lblzuban.Text = "";
 
             string OTAConString = "Data Source=" + Properties.Settings.Default.OTAServer + ";Initial Catalog=TESC;Persist Security Info=True;User ID=TESCWIN;";
             string FUJIConString = "Data Source=" + Properties.Settings.Default.FUJIServer + ";Initial Catalog=TESC;Persist Security Info=True;User ID=TESCWIN;";
 
-            //TOK
+            ///TOK 得意先の情報を取得する
             DataTable dtTOK = new DataTable();
             using (SqlConnection con = new SqlConnection(FUJIConString))
             {
@@ -60,7 +59,8 @@ namespace Rainbow
             cbxTOKCD.DisplayMember = "TOKCD";
             cbxTOKCD.ValueMember = "TOKCD";
 
-            //BUHIN ZUBAN
+            
+            ///小田原サーバーで　部品図番を取得する            
             using (SqlConnection con = new SqlConnection(OTAConString))
             {
                 SqlCommand cmd = new SqlCommand("SELECT RTRIM(M0100B.ZUBAN) ZUBAN,M0100B.ZAICD " +
@@ -79,7 +79,7 @@ namespace Rainbow
                 con.Close();
             }
 
-            //SEIHIN ZUBAN
+            ///富士宮サーバーで製品図番を取得する
             using (SqlConnection con = new SqlConnection(FUJIConString))
             {
                 SqlCommand cmd = new SqlCommand("SELECT RTRIM(ZUBAN) ZUBAN FROM M0100 WHERE ZAIKB = 'A'", con);
@@ -96,6 +96,11 @@ namespace Rainbow
             }
         }
 
+        /// <summary>
+        /// 中止する
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnCancel_Click(object sender, EventArgs e)
         {
             txtKISYU.Text = "";
@@ -107,6 +112,11 @@ namespace Rainbow
             dtNOUNYU.Value = DateTime.Today.AddDays(10);
         }
 
+        /// <summary>
+        /// 登録する
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnOK_Click(object sender, EventArgs e)
         {
             string SOUHU = "0";
@@ -138,6 +148,7 @@ namespace Rainbow
                 return;
             }
 
+            ///生産予定も登録の場合　ー　得意先コードの①
             if (lblNOUNYU.Visible && dtNOUNYU.Visible)
             {
                 string NOUNYU = dtNOUNYU.Value.ToString("yyyyMMdd");
@@ -147,14 +158,17 @@ namespace Rainbow
                 OleDbCommand cmd2 = new OleDbCommand(sqlINS2, conn);
                 cmd2.ExecuteNonQuery();
                 conn.Close();
+                MessageBox.Show("製品図番 [" + txtSEIHIN.Text + "] を登録しました。");
             }
 
-            MessageBox.Show("製品図番 [" + txtSEIHIN.Text + "] を登録しました。");
-
             btnOK.Enabled = false;
-
         }
 
+        /// <summary>
+        /// 得意先コードを選択時
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void cbxTOKCD_SelectedIndexChanged(object sender, EventArgs e)
         {
             txtSEIHIN.Text = "";
@@ -171,8 +185,8 @@ namespace Rainbow
 
             txtBUHIN.Text = "";
 
+            ///納入場所を確認する
             DataTable dtResult = new DataTable();
-
             string ConString = "Data Source=" + Properties.Settings.Default.FUJIServer + ";Initial Catalog=TESC;Persist Security Info=True;User ID=TESCWIN;";
             using (SqlConnection con = new SqlConnection(ConString))
             {
@@ -208,27 +222,28 @@ namespace Rainbow
             checkOK();
         }
 
-        private void cbxTOKCD_TextChanged(object sender, EventArgs e)
-        {
-            if (cbxTOKCD.SelectedIndex < 0)
-            {
-                cbxTOKCD.SelectedIndex = cbxTOK.SelectedIndex;
-            }
-            if (cbxTOK.SelectedIndex < 0)
-            {
-                cbxTOK.SelectedIndex = cbxTOKCD.SelectedIndex;
-            }
-
-            checkOK();
-        }
-
+        /// <summary>
+        /// 部品図番をに入力する
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void txtBUHIN_TextChanged(object sender, EventArgs e)
         {
             if (getFlag) return;
             if (SEIFlag) return;
+            
+            //if (txtBUHIN.Text.Length < 3) return;
 
-            if (txtBUHIN.Text == "")
+            if (cbxTOKCD.Text != "001") return;
+
+            BUFlag = true;
+            if (txtBUHIN.Text == "" || txtBUHIN.Text == null　|| txtBUHIN.Text.Length < 3)
             {
+                txtSEIHIN.Text = "";
+                txtSNAME.Text = "";
+                txtTANKA.Text = "";
+                txtKISYU.Text = "";
+                lblzuban.Text = "";
                 if (Application.OpenForms.Cast<Form>().Any(form => form.Name == "図番マスター"))
                 {
                     if (Application.OpenForms["図番マスター"].Visible)
@@ -236,25 +251,12 @@ namespace Rainbow
                         Application.OpenForms["図番マスター"].Hide();
                     }
                 }
-                return;
-            }
-            if (txtBUHIN.Text.Length < 3) return;
-
-            if (cbxTOKCD.Text != "001") return;
-
-            BUFlag = true;
-            if (txtBUHIN.Text == "" || txtBUHIN.Text == null)
-            {
-                txtSNAME.Text = "";
-                txtTANKA.Text = "";
-                txtKISYU.Text = "";
-                lblzuban.Text = "";
-
                 BUFlag = false;
                 return;
             }
-            DataTable dtResult = new DataTable();
 
+            ///製品図番の確認
+            DataTable dtResult = new DataTable();
             string ConString = "Data Source=" + Properties.Settings.Default.FUJIServer + ";Initial Catalog=TESC;Persist Security Info=True;User ID=TESCWIN;";
             using (SqlConnection con = new SqlConnection(ConString))
             {
@@ -293,13 +295,78 @@ namespace Rainbow
         }
 
         /// <summary>
+        /// 図番をマスターに登録されていない場合
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void txtBUHIN_Leave(object sender, EventArgs e)
+        {
+            if (getFlag) return;
+            if (txtBUHIN.Text == "") return;
+            if (txtBUHIN.Text.Length < 3) return;
+
+            ///富士宮サーバーに製品図番を登録されていない場合
+            ///小田原サーバーで製品情報を取得する
+            if (txtSEIHIN.Text == "" || txtSEIHIN.Text == null)
+            {
+                getFlag = true;
+                DataTable dtResult = new DataTable();
+                string ConString2 = "Data Source=" + Properties.Settings.Default.OTAServer + ";Initial Catalog=TESC;Persist Security Info=True;User ID=TESCWIN;";
+                using (SqlConnection con = new SqlConnection(ConString2))
+                {
+                    SqlCommand cmd = new SqlCommand("SELECT RTRIM(M0100A.ZUBAN) ZUBAN,RTRIM(M0100A.NAME) NAME,M0100A.KISYU,M0100A.TANKA,RTRIM(M0100B.ZUBAN) BUHIN,M0100A.ZAIKB " +
+                        "FROM M0100 M0100A " +
+                        "LEFT JOIN M0120 M0120 ON M0100A.ZAICD = M0120.ZAICD " +
+                        "INNER JOIN M0100 M0100B ON M0120.KABUH = M0100B.ZAICD " +
+                        "WHERE M0100B.ZUBAN ='" + txtBUHIN.Text + "'", con);
+                    con.Open();
+                    SqlDataAdapter ada = new SqlDataAdapter(cmd);
+                    dtResult = new DataTable();
+                    ada.Fill(dtResult);
+                    Clipboard.SetText(cmd.CommandText);
+                    con.Close();
+                }
+
+                
+                if (dtResult.Rows.Count == 0)
+                {
+                    getFlag = false;
+                    return;
+                }
+                if (dtResult.Rows.Count == 1)
+                {
+                    txtSEIHIN.Text = dtResult.Rows[0][0].ToString();
+                    currentSeihin = dtResult.Rows[0][0].ToString();
+                    txtSNAME.Text = dtResult.Rows[0][1].ToString();
+                    txtKISYU.Text = dtResult.Rows[0][2].ToString();
+                    txtTANKA.Text = dtResult.Rows[0][3].ToString();
+                    getFlag = false;
+                    return;
+                }
+                getFlag = false;
+
+                if (Application.OpenForms.Cast<Form>().Any(form => form.Name == "図番マスター"))
+                {
+                    seihinForm = (図番マスター)Application.OpenForms["図番マスター"];
+                }
+                else seihinForm = new 図番マスター();
+
+                var UniqueRows = dtResult.AsEnumerable().Distinct(DataRowComparer.Default);
+                seihinForm.dtValue = UniqueRows.CopyToDataTable();
+                seihinForm.reloadDT();
+                seihinForm.Show();
+            }
+
+            checkOK();
+        }
+
+        /// <summary>
         /// 製品の情報を取得する
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void txtSEIHIN_TextChanged(object sender, EventArgs e)
         {
-
             if (txtSEIHIN.Text == currentSeihin) return;
             if (getFlag) return;
             if (txtSEIHIN.Text == "")
@@ -314,8 +381,8 @@ namespace Rainbow
 
             txtBUHIN.Text = "";
 
+            ///製品情報を取得する
             DataTable dtResult = new DataTable();
-
             string ConString = "Data Source=" + Properties.Settings.Default.FUJIServer + ";Initial Catalog=TESC;Persist Security Info=True;User ID=TESCWIN;";
             using (SqlConnection con = new SqlConnection(ConString))
             {
@@ -341,76 +408,17 @@ namespace Rainbow
             else
             {
                 lblzuban.Text = "";
-
                 txtSNAME.Text = dtResult.Rows[0][1].ToString();
                 txtKISYU.Text = dtResult.Rows[0][2].ToString();
                 txtTANKA.Text = dtResult.Rows[0][3].ToString();
             }
-
             currentSeihin = txtSEIHIN.Text;
             SEIFlag = false;
 
             checkOK();
         }
 
-        /// <summary>
-        /// 図番をマスターに登録しない時
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void txtBUHIN_Leave(object sender, EventArgs e)
-        {
-            if (getFlag) return;
-            if (txtBUHIN.Text == "") return;
-            if (txtBUHIN.Text.Length < 3) return;
 
-            if (txtSEIHIN.Text == "" || txtSEIHIN.Text == null)
-            {
-                getFlag = true;
-                DataTable dtResult = new DataTable();
-                string ConString2 = "Data Source=" + Properties.Settings.Default.OTAServer + ";Initial Catalog=TESC;Persist Security Info=True;User ID=TESCWIN;";
-                using (SqlConnection con = new SqlConnection(ConString2))
-                {
-                    SqlCommand cmd = new SqlCommand("SELECT RTRIM(M0100A.ZUBAN) ZUBAN,RTRIM(M0100A.NAME) NAME,M0100A.KISYU,M0100A.TANKA,RTRIM(M0100B.ZUBAN) BUHIN,M0100A.ZAIKB " +
-                        "FROM M0100 M0100A " +
-                        "LEFT JOIN M0120 M0120 ON M0100A.ZAICD = M0120.ZAICD " +
-                        "INNER JOIN M0100 M0100B ON M0120.KABUH = M0100B.ZAICD " +
-                        "WHERE M0100B.ZUBAN ='" + txtBUHIN.Text + "'", con);
-                    con.Open();
-                    SqlDataAdapter ada = new SqlDataAdapter(cmd);
-                    dtResult = new DataTable();
-                    ada.Fill(dtResult);
-                    Clipboard.SetText(cmd.CommandText);
-                    con.Close();
-                }
-
-                if (dtResult.Rows.Count == 1)
-                {
-                    txtSEIHIN.Text = dtResult.Rows[0][0].ToString();
-                    currentSeihin = dtResult.Rows[0][0].ToString();
-                    txtSNAME.Text = dtResult.Rows[0][1].ToString();
-                    txtKISYU.Text = dtResult.Rows[0][2].ToString();
-                    txtTANKA.Text = dtResult.Rows[0][3].ToString();
-                    getFlag = false;
-                    return;
-                }
-                getFlag = false;
-
-                if (Application.OpenForms.Cast<Form>().Any(form => form.Name == "図番マスター"))
-                {
-                    seihinForm = (図番マスター)Application.OpenForms["図番マスター"];
-
-                }
-                else seihinForm = new 図番マスター();
-
-                var UniqueRows = dtResult.AsEnumerable().Distinct(DataRowComparer.Default);
-                seihinForm.dtValue = UniqueRows.CopyToDataTable();
-                seihinForm.reloadDT();
-                seihinForm.Show();
-            }
-
-            checkOK();
-        }
 
         /// <summary>
         /// 要件確認
