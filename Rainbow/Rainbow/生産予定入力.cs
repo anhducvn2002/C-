@@ -5,7 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+//using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Data.OleDb;
 using System.IO;
@@ -19,6 +19,7 @@ namespace Rainbow
         private static bool SEIFlag = false;
         private static bool BUFlag = false;
         private static bool getFlag = false;
+        private static bool updateFlag = false;
         private static AutoCompleteStringCollection ZubanCollection = new AutoCompleteStringCollection();
         private static string currentSeihin = "";
         private static 図番マスター seihinForm;
@@ -447,10 +448,50 @@ namespace Rainbow
             dtNOUNYU.Value = DateTime.Today.AddDays(10);
         }
 
+        public void updateRecord(string zuban, string sname, string kisyu, string tanka, string cyusu, string cyudt, string nounyu, string tokcd, string noucd)
+        {
+            updateFlag = true;
+
+            cbxTOKCD.SelectedText = tokcd;
+
+            //for (int i = 0; i< cbxNOU.Items.Count; i++)
+            //{
+            //    if()
+            //}
+
+            cbxNOU.SelectedText = noucd;
+            //txtCYUNO.Text = cyuno;
+            txtBUHIN.Text = "";
+            txtSEIHIN.Text = zuban;
+            txtKISYU.Text = kisyu;
+            txtSNAME.Text = sname;
+            numCYUSU.Value = Int32.Parse(cyusu);
+            txtTANKA.Text = tanka;
+
+
+            dtCYUDT.Value = new DateTime(2019, 10, 20);
+
+            dtCYUDT.Value = new DateTime(Int32.Parse(cyudt.Substring(0, 4)), Int32.Parse(cyudt.Substring(4, 2)), Int32.Parse(cyudt.Substring(6, 2)));
+            //dtNOUKI.Value = new DateTime(Int32.Parse(nouki.Substring(0, 4)), Int32.Parse(nouki.Substring(4, 2)), Int32.Parse(nouki.Substring(6, 2)));
+            dtNOUNYU.Value = new DateTime(Int32.Parse(nounyu.Substring(0, 4)), Int32.Parse(nounyu.Substring(4, 2)), Int32.Parse(nounyu.Substring(6, 2)));
+
+            btnOK.Text = "Update";
+
+            updateFlag = false;
+        }
+
         private void 生産予定入力_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (Application.OpenForms.Cast<Form>().Any(form => form.Name == "図番マスター"))
                 Application.OpenForms["図番マスター"].Close();
+        }
+
+        private void 生産予定入力_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                SendKeys.Send("{TAB}");
+            }
         }
     }
 }

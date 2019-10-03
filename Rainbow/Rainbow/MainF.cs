@@ -5,7 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+//using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Rainbow
@@ -21,8 +21,11 @@ namespace Rainbow
         {
             if (Application.OpenForms.Cast<Form>().Any(form => form.Name == "生産予定入力"))
                 Application.OpenForms["生産予定入力"].Hide();
-
-            if (Application.OpenForms.Cast<Form>().Any(form => form.Name == "確定受注入力"))
+            if (Application.OpenForms.Cast<Form>().Any(form => form.Name == "一覧確認"))
+            {
+                Application.OpenForms["一覧確認"].Hide();
+            }
+                if (Application.OpenForms.Cast<Form>().Any(form => form.Name == "確定受注入力"))
             {
                 Application.OpenForms["確定受注入力"].Show();
                 Application.OpenForms["確定受注入力"].Activate();
@@ -38,8 +41,7 @@ namespace Rainbow
             {
                 確定受注入力 f1 = new 確定受注入力();
                 f1.StartPosition = FormStartPosition.Manual;
-                f1.Left = 500;
-                f1.Top = 100;
+               
                 f1.Show(this);
 
                 if (Application.OpenForms.Cast<Form>().Any(form => form.Name == "図番マスター"))
@@ -58,7 +60,10 @@ namespace Rainbow
         {
             if (Application.OpenForms.Cast<Form>().Any(form => form.Name == "確定受注入力"))
                 Application.OpenForms["確定受注入力"].Hide();
-
+            if (Application.OpenForms.Cast<Form>().Any(form => form.Name == "一覧確認"))
+            {
+                Application.OpenForms["一覧確認"].Hide();
+            }
             if (Application.OpenForms.Cast<Form>().Any(form => form.Name == "生産予定入力"))
             {
                 Application.OpenForms["生産予定入力"].Show();
@@ -75,8 +80,7 @@ namespace Rainbow
             {
                 生産予定入力 f1 = new 生産予定入力();
                 f1.StartPosition = FormStartPosition.Manual;
-                f1.Left = 100;
-                f1.Top = 350;
+             
                 f1.Show();
                 if (Application.OpenForms.Cast<Form>().Any(form => form.Name == "図番マスター"))
                 {
@@ -105,6 +109,39 @@ namespace Rainbow
                 設定 f1 = new 設定();
                 f1.Show();
             }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            if (Application.OpenForms.Cast<Form>().Any(form => form.Name == "確定受注入力") )
+            {
+                Application.OpenForms["確定受注入力"].Hide();
+            }
+                
+             if (Application.OpenForms.Cast<Form>().Any(form => form.Name == "生産予定入力"))
+            {
+                Application.OpenForms["生産予定入力"].Hide();
+            }
+                
+
+            if (Application.OpenForms.Cast<Form>().Any(form => form.Name == "一覧確認"))
+            {
+                Application.OpenForms["一覧確認"].Show();
+                Application.OpenForms["一覧確認"].Activate();
+                if (Application.OpenForms.Cast<Form>().Any(form => form.Name == "図番マスター"))
+                {
+                    if (Application.OpenForms["図番マスター"].Visible)
+                    {
+                        Application.OpenForms["図番マスター"].Hide();
+                    }
+                }
+            }
+            else
+            {
+                一覧確認 f1 = new 一覧確認();
+                f1.Show();
+            }
+          
         }
     }
 }

@@ -98,20 +98,20 @@
             // lblSer1
             // 
             this.lblSer1.AutoSize = true;
-            this.lblSer1.Location = new System.Drawing.Point(76, 67);
+            this.lblSer1.Location = new System.Drawing.Point(40, 67);
             this.lblSer1.Name = "lblSer1";
-            this.lblSer1.Size = new System.Drawing.Size(53, 12);
+            this.lblSer1.Size = new System.Drawing.Size(89, 12);
             this.lblSer1.TabIndex = 9;
-            this.lblSer1.Text = "サーバー１";
+            this.lblSer1.Text = "自拠点サーバー１";
             // 
             // lblSer2
             // 
             this.lblSer2.AutoSize = true;
-            this.lblSer2.Location = new System.Drawing.Point(76, 110);
+            this.lblSer2.Location = new System.Drawing.Point(28, 110);
             this.lblSer2.Name = "lblSer2";
-            this.lblSer2.Size = new System.Drawing.Size(53, 12);
+            this.lblSer2.Size = new System.Drawing.Size(101, 12);
             this.lblSer2.TabIndex = 10;
-            this.lblSer2.Text = "サーバー２";
+            this.lblSer2.Text = "依頼拠点サーバー２";
             // 
             // lblFolder
             // 
@@ -156,7 +156,9 @@
             this.Controls.Add(this.txtServer1);
             this.Controls.Add(this.txtFolder);
             this.Controls.Add(this.btnFolder);
+            this.Location = new System.Drawing.Point(305, 100);
             this.Name = "設定";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "設定";
             this.Load += new System.EventHandler(this.設定_Load);
             this.ResumeLayout(false);

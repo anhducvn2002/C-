@@ -5,7 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+//using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Data.OleDb;
 using System.IO;
@@ -19,6 +19,8 @@ namespace Rainbow
         private static bool SEIFlag = false;
         private static bool BUFlag = false;
         private static bool getFlag = false;
+        private static bool updateFlag = false;
+
         private static AutoCompleteStringCollection ZubanCollection = new AutoCompleteStringCollection();
         private static string currentSeihin = "";
         private static 図番マスター seihinForm;
@@ -104,6 +106,7 @@ namespace Rainbow
         /// <param name="e"></param>
         private void cbxTOKCD_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (updateFlag) return;
             txtSEIHIN.Text = "";
             if (cbxTOKCD.Text != "001")
             {
@@ -165,6 +168,7 @@ namespace Rainbow
         /// <param name="e"></param>
         private void txtBUHIN_TextChanged(object sender, EventArgs e)
         {
+            if (updateFlag) return;
             if (getFlag) return;
             if (SEIFlag) return;
 
@@ -234,6 +238,7 @@ namespace Rainbow
         /// <param name="e"></param>
         private void txtBUHIN_Leave(object sender, EventArgs e)
         {
+            if (updateFlag) return;
             if (getFlag) return;
             if (txtBUHIN.Text == "") return;
             if (txtBUHIN.Text.Length < 3) return;
@@ -258,6 +263,12 @@ namespace Rainbow
                     ada.Fill(dtResult);
                     Clipboard.SetText(cmd.CommandText);
                     con.Close();
+                }
+
+                if (dtResult.Rows.Count == 0)
+                {
+                    getFlag = false;
+                    return;
                 }
 
                 if (dtResult.Rows.Count == 1)
@@ -315,6 +326,7 @@ namespace Rainbow
         /// <param name="e"></param>
         private void txtSEIHIN_TextChanged(object sender, EventArgs e)
         {
+            if (updateFlag) return;
             if (txtSEIHIN.Text == currentSeihin) return;
             if (getFlag) return;
             if (txtSEIHIN.Text == "")
@@ -425,13 +437,13 @@ namespace Rainbow
             OleDbCommand cmd = new OleDbCommand(sqlINS, conn);
             cmd.ExecuteNonQuery();
             conn.Close();
-
+            
             ///生産予定も登録の場合　ー　得意先コードの①
             if (lblNOUNYU.Visible && dtNOUNYU.Visible)
             {
                 string NOUNYU = dtNOUNYU.Value.ToString("yyyyMMdd");
                 //INSERT SEIYO
-                string sqlINS2 = "INSERT INTO SEIYODF.DBF VALUES ('','" + SOUHU + "','" + CYUDT + "','" + BCODE + "','" + ZUBAN + "','" + SNAME + "','" + KISYU + "','" + TANI + "','" + TANKA + "','" + CYUSU + "','" + NOUNYU + "','" + HKBN + "','" + SEIZO + "','" + HINSYU + "','" + NKBN + "','" + TOKCD + "','" + NOUCD + "','" + SFLG + "')";
+                string sqlINS2 = "INSERT INTO SEIYODF.DBF VALUES ('" + CYUNO + "','" + SOUHU + "','" + CYUDT + "','" + BCODE + "','" + ZUBAN + "','" + SNAME + "','" + KISYU + "','" + TANI + "','" + TANKA + "','" + CYUSU + "','" + NOUNYU + "','" + HKBN + "','" + SEIZO + "','" + HINSYU + "','" + NKBN + "','" + TOKCD + "','" + NOUCD + "','" + SFLG + "')";
                 conn.Open();
                 OleDbCommand cmd2 = new OleDbCommand(sqlINS2, conn);
                 cmd2.ExecuteNonQuery();
@@ -477,7 +489,34 @@ namespace Rainbow
             if (lblzuban.Text + lblNOU.Text == "") btnOK.Enabled = true;
             else btnOK.Enabled = false;
         }
-        
+
+        public void updateRecord(string cyuno, string zuban, string sname, string kisyu, string tanka, string cyusu, string cyudt, string nouki,string nounyu, string tokcd, string noucd)
+        {
+            updateFlag = true;
+
+            cbxTOKCD.SelectedText = tokcd;
+            cbxNOU.SelectedText = noucd;
+            txtCYUNO.Text = cyuno;
+            txtBUHIN.Text = "";
+            txtSEIHIN.Text = zuban;
+            txtKISYU.Text = kisyu;
+            txtSNAME.Text = sname;
+            numCYUSU.Value = Int32.Parse(cyusu);
+            txtTANKA.Text = tanka;
+
+
+            dtCYUDT.Value = new DateTime(2019, 10, 20);
+
+            dtCYUDT.Value = new DateTime(Int32.Parse(cyudt.Substring(0, 4)), Int32.Parse(cyudt.Substring(4, 2)), Int32.Parse(cyudt.Substring(6, 2)));            
+            dtNOUKI.Value = new DateTime(Int32.Parse(nouki.Substring(0, 4)), Int32.Parse(nouki.Substring(4, 2)), Int32.Parse(nouki.Substring(6, 2)));
+            dtNOUNYU.Value = new DateTime(Int32.Parse(nounyu.Substring(0, 4)), Int32.Parse(nounyu.Substring(4, 2)), Int32.Parse(nounyu.Substring(6, 2)));
+
+            btnOK.Text = "Update";
+
+            updateFlag = false;
+        }
+
+
         /// <summary>
         /// 
         /// </summary>
@@ -487,6 +526,86 @@ namespace Rainbow
         {
             if (Application.OpenForms.Cast<Form>().Any(form => form.Name == "図番マスター"))
                 Application.OpenForms["図番マスター"].Close();
+        }
+
+        private void 確定受注入力_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                SendKeys.Send("{TAB}");
+            }
+        }
+
+        private void txtCYUNO_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+
+                this.cbxTOKCD.Text = "152";
+
+                string cyuno = this.txtCYUNO.Text;
+               //string tokcd = "00"+this.cbxTOKCD.Text;
+               // MessageBox.Show(tokcd);
+                string OTAConString = "Data Source=" + Properties.Settings.Default.OTAServer + ";Initial Catalog=TESC;Persist Security Info=True;User ID=TESCWIN;";
+                DataTable tb1 = new DataTable();
+                using (SqlConnection con = new SqlConnection(OTAConString))
+                {
+                    //SqlCommand cmd = new SqlCommand("SELECT M0100.ZUBAN,D4000.HACSU,D4000.NOUKI FROM D4000 INNER JOIN M0100 " +
+                    //    "  ON D4000.SEICD = M0100.ZAICD WHERE D4000.HACCD ='" + tokcd+ "' and D4000.HACNO='" + cyuno+ "' and M0100.ZAIKB = 'B'", con);
+
+                    SqlCommand cmd = new SqlCommand("SELECT M0100.ZUBAN,D4000.HACSU,D4000.NOUKI,RIGHT(D4000.HACCD,3) HACCD FROM D4000 INNER JOIN M0100 " +
+                        "  ON D4000.SEICD = M0100.ZAICD WHERE D4000.HACNO='" + cyuno + "' and M0100.ZAIKB = 'B'", con);
+
+                    con.Open();
+
+                    SqlDataAdapter ada = new SqlDataAdapter(cmd);
+                    ada.Fill(tb1);
+                    con.Close();
+                }
+
+                
+
+                if (tb1.Rows.Count > 0)
+                {
+                    /*得意先コード1
+                        string FUJIConString = "Data Source=" + Properties.Settings.Default.FUJIServer + ";Initial Catalog=TESC;Persist Security Info=True;User ID=TESCWIN;";
+                        DataTable tb2 = new DataTable();
+                        using (SqlConnection con = new SqlConnection(FUJIConString))
+                        {
+                            SqlCommand cmd = new SqlCommand("SELECT RIGHT(TOKCD,3) TOKCD,NAME FROM M0200 WHERE RIGHT(TOKCD,3)='" + tb1.Rows[0]["HACCD"].ToString() + "'", con);
+                            con.Open();
+                            SqlDataAdapter ada = new SqlDataAdapter(cmd);
+                            ada.Fill(tb2);
+                            con.Close();
+                        }*/
+                    //得意先コード2
+
+                    if (this.cbxTOKCD.FindStringExact(tb1.Rows[0]["HACCD"].ToString()) > 1)
+                    {
+                        this.cbxTOKCD.Text = tb1.Rows[0]["HACCD"].ToString();
+                    }
+                    else
+                    {
+                        this.cbxTOKCD.Text = tb1.Rows[0]["HACCD"].ToString();
+                        this.cbxTOK.Text = "";
+                        this.cbxNOU.Items.Clear();
+                        this.cbxNOU.Text = "";
+                        lblNOU.Text = "*得意先コードは存在しません。";
+                    }
+
+                    this.txtBUHIN.Text = tb1.Rows[0]["ZUBAN"].ToString();
+                    this.txtSEIHIN.Text = tb1.Rows[0]["ZUBAN"].ToString();
+                    this.numCYUSU.Value = Int32.Parse(tb1.Rows[0]["HACSU"].ToString());
+
+                    string nouki= tb1.Rows[0]["NOUKI"].ToString();
+                    string nam = nouki.Substring(0, 4);
+                    string thang = nouki.Substring(4, 2);
+                    string ngay = nouki.Substring(6, 2);
+                    nouki = nam + "/" + thang + "/" + ngay;
+                    this.dtNOUKI.Text = nouki;
+                    this.dtNOUNYU.Text = nouki;
+                }
+            }
         }
     }
 }

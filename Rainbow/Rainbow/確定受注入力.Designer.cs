@@ -166,7 +166,7 @@
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 23);
             this.btnOK.TabIndex = 13;
-            this.btnOK.Text = "OK";
+            this.btnOK.Text = "登録";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
             // 
@@ -176,7 +176,7 @@
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 14;
-            this.btnCancel.Text = "キャンセル";
+            this.btnCancel.Text = "クリア";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
@@ -187,6 +187,7 @@
             this.txtCYUNO.Size = new System.Drawing.Size(121, 19);
             this.txtCYUNO.TabIndex = 3;
             this.txtCYUNO.Text = "123456";
+            this.txtCYUNO.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtCYUNO_KeyDown);
             // 
             // txtBUHIN
             // 
@@ -251,9 +252,9 @@
             this.lblzuban.ForeColor = System.Drawing.Color.Red;
             this.lblzuban.Location = new System.Drawing.Point(240, 199);
             this.lblzuban.Name = "lblzuban";
-            this.lblzuban.Size = new System.Drawing.Size(188, 12);
+            this.lblzuban.Size = new System.Drawing.Size(189, 12);
             this.lblzuban.TabIndex = 34;
-            this.lblzuban.Text = "*図番をマスターに登録されていません。";
+            this.lblzuban.Text = "*図番がマスターに登録されていません。";
             // 
             // cbxTOK
             // 
@@ -347,7 +348,7 @@
             this.label9.ForeColor = System.Drawing.Color.DarkBlue;
             this.label9.Location = new System.Drawing.Point(12, 24);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(440, 37);
+            this.label9.Size = new System.Drawing.Size(452, 37);
             this.label9.TabIndex = 45;
             this.label9.Text = "確定受注";
             this.label9.TextAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -356,7 +357,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(464, 440);
+            this.ClientSize = new System.Drawing.Size(476, 440);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.lblNOU);
             this.Controls.Add(this.cbxNOU);
@@ -387,12 +388,16 @@
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Location = new System.Drawing.Point(300, 0);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
+            this.KeyPreview = true;
+            this.Location = new System.Drawing.Point(305, 100);
             this.MaximizeBox = false;
             this.Name = "確定受注入力";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "確定受注　入力";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.確定受注入力_FormClosing);
             this.Load += new System.EventHandler(this.確定受注入力_Load);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.確定受注入力_KeyDown);
             ((System.ComponentModel.ISupportInitialize)(this.numCYUSU)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

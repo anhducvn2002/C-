@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+//using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Rainbow
@@ -17,7 +17,7 @@ namespace Rainbow
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new MainF());
-            //Application.Run(new 生産予定());
+            //Application.Run(new 一覧確認());
         }
     }
 }

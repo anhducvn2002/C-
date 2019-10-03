@@ -1,0 +1,17 @@
+C:\ADuc\Rainbow\Rainbow\Rainbow\bin\x86\Debug\Rainbow.exe.config
+C:\ADuc\Rainbow\Rainbow\Rainbow\bin\x86\Debug\Rainbow.exe
+C:\ADuc\Rainbow\Rainbow\Rainbow\bin\x86\Debug\Rainbow.pdb
+C:\ADuc\Rainbow\Rainbow\Rainbow\obj\x86\Debug\Rainbow.csprojAssemblyReference.cache
+C:\ADuc\Rainbow\Rainbow\Rainbow\obj\x86\Debug\Rainbow.MainF.resources
+C:\ADuc\Rainbow\Rainbow\Rainbow\obj\x86\Debug\Rainbow.Properties.Resources.resources
+C:\ADuc\Rainbow\Rainbow\Rainbow\obj\x86\Debug\Rainbow.TestServer.resources
+C:\ADuc\Rainbow\Rainbow\Rainbow\obj\x86\Debug\Rainbow.図番マスター.resources
+C:\ADuc\Rainbow\Rainbow\Rainbow\obj\x86\Debug\Rainbow.生産予定入力.resources
+C:\ADuc\Rainbow\Rainbow\Rainbow\obj\x86\Debug\Rainbow.確定受注入力.resources
+C:\ADuc\Rainbow\Rainbow\Rainbow\obj\x86\Debug\Rainbow.設定.resources
+C:\ADuc\Rainbow\Rainbow\Rainbow\obj\x86\Debug\Rainbow.csproj.GenerateResource.cache
+C:\ADuc\Rainbow\Rainbow\Rainbow\obj\x86\Debug\Rainbow.csproj.CoreCompileInputs.cache
+C:\ADuc\Rainbow\Rainbow\Rainbow\obj\x86\Debug\Rainbow.exe
+C:\ADuc\Rainbow\Rainbow\Rainbow\obj\x86\Debug\Rainbow.pdb
+C:\ADuc\Rainbow\Rainbow\Rainbow\obj\x86\Debug\Rainbow.一覧確認.resources
+C:\ADuc\Rainbow\Rainbow\Rainbow\obj\x86\Debug\Rainbow.Form1.resources

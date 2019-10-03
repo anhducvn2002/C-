@@ -144,7 +144,7 @@
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 23);
             this.btnOK.TabIndex = 13;
-            this.btnOK.Text = "OK";
+            this.btnOK.Text = "登録";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
             // 
@@ -154,7 +154,7 @@
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 14;
-            this.btnCancel.Text = "キャンセル";
+            this.btnCancel.Text = "クリア";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
@@ -211,11 +211,11 @@
             // lblzuban
             // 
             this.lblzuban.ForeColor = System.Drawing.Color.Red;
-            this.lblzuban.Location = new System.Drawing.Point(239, 153);
+            this.lblzuban.Location = new System.Drawing.Point(240, 159);
             this.lblzuban.Name = "lblzuban";
-            this.lblzuban.Size = new System.Drawing.Size(107, 28);
+            this.lblzuban.Size = new System.Drawing.Size(198, 16);
             this.lblzuban.TabIndex = 34;
-            this.lblzuban.Text = "*図番をマスターに登録されていません。";
+            this.lblzuban.Text = "*図番がマスターに登録されていません。";
             // 
             // cbxTOK
             // 
@@ -345,11 +345,16 @@
             this.Controls.Add(this.label6);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
+            this.KeyPreview = true;
+            this.Location = new System.Drawing.Point(305, 100);
             this.MaximizeBox = false;
             this.Name = "生産予定入力";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "生産予定　入力";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.生産予定入力_FormClosing);
             this.Load += new System.EventHandler(this.生産予定入力_Load);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.生産予定入力_KeyDown);
             ((System.ComponentModel.ISupportInitialize)(this.numCYUSU)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
