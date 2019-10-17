@@ -17,7 +17,7 @@ namespace Rainbow
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new MainF());
-            //Application.Run(new 一覧確認());
+            //Application.Run(new Form1());
         }
     }
 }

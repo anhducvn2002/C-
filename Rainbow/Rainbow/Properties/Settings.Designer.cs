@@ -58,5 +58,17 @@ namespace Rainbow.Properties {
                 this["DBFFolder"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("10.121.21.15")]
+        public string TestServer {
+            get {
+                return ((string)(this["TestServer"]));
+            }
+            set {
+                this["TestServer"] = value;
+            }
+        }
     }
 }

@@ -193,7 +193,7 @@ namespace Rainbow
             string ConString = "Data Source=" + Properties.Settings.Default.FUJIServer + ";Initial Catalog=TESC;Persist Security Info=True;User ID=TESCWIN;";
             using (SqlConnection con = new SqlConnection(ConString))
             {
-                SqlCommand cmd = new SqlCommand("SELECT RTRIM(M0100A.ZUBAN) ZUBAN,RTRIM(M0100A.NAME) NAME,M0100A.KISYU,M0100A.TANKA " +
+                SqlCommand cmd = new SqlCommand("SELECT RTRIM(M0100A.ZUBAN) ZUBAN,RTRIM(M0100A.NAME) NAME,M0100A.KISYU,M0100A.TANKA, RTRIM(M0100B.ZUBAN) BUHIN " +
                     "FROM M0100 M0100A " +
                     "LEFT JOIN M0120 M0120 ON M0100A.ZAICD = M0120.ZAICD " +
                     "INNER JOIN M0100 M0100B ON M0120.KABUH = M0100B.ZAICD " +
@@ -213,7 +213,7 @@ namespace Rainbow
                 txtSEIHIN.Text = "";
                 lblzuban.Text = "*図番をマスターに登録されていません。";
             }
-            else
+            else if(dtResult.Rows.Count == 1)
             {
                 lblzuban.Text = "";
                 txtSEIHIN.Text = dtResult.Rows[0][0].ToString();
@@ -221,6 +221,23 @@ namespace Rainbow
                 txtSNAME.Text = dtResult.Rows[0][1].ToString();
                 txtKISYU.Text = dtResult.Rows[0][2].ToString();
                 txtTANKA.Text = dtResult.Rows[0][3].ToString();
+            }
+            else {
+                lblzuban.Text = "";
+                txtSNAME.Text = "";
+                txtTANKA.Text = "";
+                txtKISYU.Text = "";
+                txtSEIHIN.Text = "";
+                if (Application.OpenForms.Cast<Form>().Any(form => form.Name == "図番マスター"))
+                {
+                    seihinForm = (図番マスター)Application.OpenForms["図番マスター"];
+                }
+                else seihinForm = new 図番マスター();
+
+                var UniqueRows = dtResult.AsEnumerable().Distinct(DataRowComparer.Default);
+                seihinForm.dtValue = UniqueRows.CopyToDataTable();
+                seihinForm.reloadDT();
+                seihinForm.Show();
             }
             BUFlag = false;
 

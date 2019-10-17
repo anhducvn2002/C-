@@ -25,7 +25,7 @@ namespace Rainbow
             {
                 Application.OpenForms["一覧確認"].Hide();
             }
-                if (Application.OpenForms.Cast<Form>().Any(form => form.Name == "確定受注入力"))
+            if (Application.OpenForms.Cast<Form>().Any(form => form.Name == "確定受注入力"))
             {
                 Application.OpenForms["確定受注入力"].Show();
                 Application.OpenForms["確定受注入力"].Activate();
@@ -41,7 +41,7 @@ namespace Rainbow
             {
                 確定受注入力 f1 = new 確定受注入力();
                 f1.StartPosition = FormStartPosition.Manual;
-               
+
                 f1.Show(this);
 
                 if (Application.OpenForms.Cast<Form>().Any(form => form.Name == "図番マスター"))
@@ -80,7 +80,7 @@ namespace Rainbow
             {
                 生産予定入力 f1 = new 生産予定入力();
                 f1.StartPosition = FormStartPosition.Manual;
-             
+
                 f1.Show();
                 if (Application.OpenForms.Cast<Form>().Any(form => form.Name == "図番マスター"))
                 {
@@ -113,16 +113,16 @@ namespace Rainbow
 
         private void button2_Click(object sender, EventArgs e)
         {
-            if (Application.OpenForms.Cast<Form>().Any(form => form.Name == "確定受注入力") )
+            if (Application.OpenForms.Cast<Form>().Any(form => form.Name == "確定受注入力"))
             {
                 Application.OpenForms["確定受注入力"].Hide();
             }
-                
-             if (Application.OpenForms.Cast<Form>().Any(form => form.Name == "生産予定入力"))
+
+            if (Application.OpenForms.Cast<Form>().Any(form => form.Name == "生産予定入力"))
             {
                 Application.OpenForms["生産予定入力"].Hide();
             }
-                
+
 
             if (Application.OpenForms.Cast<Form>().Any(form => form.Name == "一覧確認"))
             {
@@ -141,7 +141,21 @@ namespace Rainbow
                 一覧確認 f1 = new 一覧確認();
                 f1.Show();
             }
-          
+
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            if (Application.OpenForms.Cast<Form>().Any(form => form.Name == "Form1"))
+            {
+                Application.OpenForms["Form1"].Show();
+                Application.OpenForms["Form1"].Activate();
+            }
+            else
+            {
+                Form1 f1 = new Form1();
+                f1.Show();
+            }
         }
     }
 }

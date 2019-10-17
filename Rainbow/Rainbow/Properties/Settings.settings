@@ -11,5 +11,8 @@
     <Setting Name="DBFFolder" Type="System.String" Scope="User">
       <Value Profile="(Default)">\\10.121.21.16\Rainbow</Value>
     </Setting>
+    <Setting Name="TestServer" Type="System.String" Scope="User">
+      <Value Profile="(Default)">10.121.21.15</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
